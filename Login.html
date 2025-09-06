@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login — SI JIMITIUS</title>
+
+<!-- Fonts & Icons -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&family=Poppins:wght@600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+<style>
+:root{
+  --bg:#0f1724; --card:#1e293b; --text:#f8fafc; --muted:#94a3b8;
+  --brand-1:#0ea5a3; --brand-2:#06b6d4; --radius:16px; --shadow-lg: 0 10px 30px rgba(2,6,23,0.75);
+}
+:root.light{
+  --bg:#f8fafc; --card:#ffffff; --text:#0b1220; --muted:#475569;
+  --brand-1:#0ea5a3; --brand-2:#06b6d4; --shadow-lg: 0 10px 30px rgba(12,16,26,0.08);
+}
+*{box-sizing:border-box;}
+body{
+  margin:0; font-family:Inter, system-ui; background:linear-gradient(180deg,var(--bg), rgba(0,0,0,0.02));
+  color:var(--text); display:flex; justify-content:center; align-items:center; height:100vh;
+  transition: background .35s, color .35s;
+}
+.container{
+  background:var(--card); padding:40px; border-radius:var(--radius); box-shadow:var(--shadow-lg); width:100%; max-width:450px;
+  display:flex; flex-direction:column; align-items:center; gap:24px; position:relative;
+  transition: background .35s, box-shadow .35s, transform .3s;
+}
+.container:hover{
+  transform: translateY(-3px);
+}
+.container img{
+  width:80px; height:80px; border-radius:12px; object-fit:cover; margin-bottom:12px;
+  transition: transform .35s ease, opacity .35s ease, filter .35s ease;
+}
+h2{text-align:center; margin-bottom:0; font-family:Poppins;}
+form{
+  width:100%; display:flex; flex-direction:column; gap:18px; position:relative;
+}
+.input-group{
+  display:flex; align-items:center; gap:12px; width:100%;
+  position:relative;
+}
+.input-group label{
+  width:120px; color:var(--muted); font-weight:600;
+}
+.input-group input{
+  flex:1; padding:12px; border-radius:8px; border:1px solid rgba(0,0,0,0.1);
+  background:transparent; color:var(--text);
+  transition: background .35s, border-color .35s, box-shadow .35s, transform .2s;
+}
+.input-group input::placeholder{color:var(--muted);}
+.input-group input:focus{
+  outline:none;
+  border-color:var(--brand-2);
+  box-shadow:0 0 8px rgba(6,182,212,0.4);
+  background: rgba(255,255,255,0.05);
+  transform: scale(1.02);
+}
+:root.light .input-group input:focus{
+  background: rgba(0,0,0,0.03);
+}
+.toggle-password{
+  position:absolute; right:12px; cursor:pointer; color:var(--muted); top:50%; transform:translateY(-50%);
+  transition: transform .3s, color .3s;
+}
+.toggle-password:hover{ color: var(--brand-2); transform: translateY(-50%) scale(1.1);}
+.btn{
+  width:100%; padding:12px; border:none; border-radius:999px; font-weight:700; cursor:pointer;
+  background:linear-gradient(90deg,var(--brand-1),var(--brand-2)); color:#fff; position:relative; overflow:hidden;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.btn:hover{transform:translateY(-3px); box-shadow:0 12px 30px rgba(6,182,212,0.18);}
+.ripple{
+  position:absolute; border-radius:50%; transform: scale(0);
+  animation: ripple 0.6s linear;
+  background-color: rgba(255,255,255,0.4);
+  pointer-events:none;
+}
+@keyframes ripple{ to{ transform: scale(4); opacity:0; } }
+.toggle-theme{
+  position:absolute; top:20px; right:20px; background:transparent; border:none; color:var(--muted); font-size:1.4rem; cursor:pointer;
+  transition: color .3s;
+}
+.toggle-theme:hover{ color: var(--brand-2);}
+a.forgot{display:block; text-align:right; margin-top:4px; color:var(--brand-2); text-decoration:none; font-weight:600;}
+
+/* Toast professional */
+#toastContainer{position:fixed; top:20px; right:20px; display:flex; flex-direction:column; gap:10px; z-index:1000;}
+.toast{
+  display:flex; align-items:center; gap:10px; padding:12px 16px; border-radius:12px;
+  color:#fff; font-weight:600; min-width:220px; max-width:300px;
+  backdrop-filter: blur(6px); box-shadow:0 4px 12px rgba(0,0,0,0.25);
+  opacity:0; transform: translateX(100%); transition: transform 0.4s ease, opacity 0.4s ease;
+}
+.toast.show{opacity:1; transform: translateX(0);}
+.toast.success{background:linear-gradient(90deg,#22c55e,#16a34a);}
+.toast.error{background:linear-gradient(90deg,#ef4444,#b91c1c);}
+.toast.info{background:linear-gradient(90deg,#facc15,#eab308);}
+.toast i{font-size:1.2rem;}
+.toast .close{margin-left:auto; cursor:pointer; font-size:1.1rem; opacity:0.7; transition:opacity .2s;}
+.toast .close:hover{opacity:1;}
+</style>
+</head>
+<body>
+
+<button id="themeBtn" class="toggle-theme"><i id="themeIcon" class="fa-solid fa-moon"></i></button>
+
+<div class="container">
+  <img id="logo" src="../GOOGLE SITE/img/putih logo.png" alt="Logo SI JIMITIUS">
+  <h2>Login SI JIMITIUS</h2>
+  <form id="loginForm">
+    <div class="input-group">
+      <label for="email">Email</label>
+      <input type="email" id="email" placeholder="Masukkan email" required>
+    </div>
+    <div class="input-group">
+      <label for="password">Kata Sandi</label>
+      <input type="password" id="password" placeholder="Masukkan kata sandi" required>
+      <i id="togglePassword" class="fa-solid fa-eye toggle-password"></i>
+    </div>
+    <button type="submit" class="btn"><i class="fa-solid fa-right-to-bracket"></i> Login</button>
+    <a href="#" class="forgot">Lupa kata sandi?</a>
+  </form>
+</div>
+
+<div id="toastContainer"></div>
+
+<script>
+const themeBtn = document.getElementById('themeBtn');
+const themeIcon = document.getElementById('themeIcon');
+const logo = document.getElementById('logo');
+const preferred = localStorage.getItem('theme');
+
+// Toast professional
+function showToast(message, type='info', duration=3000){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  let icon = '';
+  if(type==='success') icon = '<i class="fa-solid fa-circle-check"></i>';
+  else if(type==='error') icon = '<i class="fa-solid fa-circle-xmark"></i>';
+  else icon = '<i class="fa-solid fa-info-circle"></i>';
+  toast.innerHTML = `${icon}<span>${message}</span><span class="close">&times;</span>`;
+  container.appendChild(toast);
+  setTimeout(()=>toast.classList.add('show'),50);
+  toast.querySelector('.close').addEventListener('click', ()=>{
+    toast.classList.remove('show');
+    setTimeout(()=>toast.remove(),400);
+  });
+  setTimeout(()=>{
+    toast.classList.remove('show');
+    setTimeout(()=>toast.remove(),400);
+  }, duration);
+}
+
+// Fungsi toggle tema dengan animasi logo
+function applyTheme(mode){
+  const isLight = mode === 'light';
+  logo.style.opacity = 0;
+  logo.style.transform = 'rotateY(90deg)';
+  setTimeout(() => {
+    document.documentElement.classList.toggle('light', isLight);
+    themeIcon.className = 'fa-solid ' + (isLight ? 'fa-sun' : 'fa-moon');
+    logo.src = isLight ? '../GOOGLE SITE/img/hitam logo.png' : '../GOOGLE SITE/img/putih logo.png';
+    logo.style.opacity = 1;
+    logo.style.transform = 'rotateY(0deg)';
+  }, 200);
+}
+
+// Tema awal berdasarkan preferensi user atau jam
+if(preferred) applyTheme(preferred);
+else{
+  const h = new Date().getHours();
+  applyTheme(h>=6 && h<18 ? 'light' : 'dark');
+}
+// Detect prefers-color-scheme
+const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+mediaQuery.addEventListener('change', e => applyTheme(e.matches ? 'dark' : 'light'));
+
+// Toggle tema saat klik
+themeBtn.addEventListener('click', () => {
+  const isLight = !document.documentElement.classList.contains('light');
+  localStorage.setItem('theme', isLight ? 'light' : 'dark');
+  applyTheme(isLight ? 'light' : 'dark');
+});
+
+// Toggle password visibility
+const password = document.getElementById('password');
+const togglePassword = document.getElementById('togglePassword');
+togglePassword.addEventListener('click', () => {
+  password.type = password.type === 'password' ? 'text' : 'password';
+  togglePassword.classList.toggle('fa-eye-slash');
+  togglePassword.classList.toggle('fa-eye');
+  togglePassword.style.transform = 'translateY(-50%) rotate(360deg) scale(1.2)';
+  setTimeout(()=>togglePassword.style.transform='translateY(-50%) scale(1)',300);
+});
+
+// Ripple effect tombol
+document.querySelectorAll('.btn').forEach(btn=>{
+  btn.addEventListener('click', e=>{
+    const circle = document.createElement('span');
+    circle.classList.add('ripple');
+    btn.appendChild(circle);
+    const d = Math.max(btn.clientWidth, btn.clientHeight);
+    circle.style.width = circle.style.height = d+'px';
+    const rect = btn.getBoundingClientRect();
+    circle.style.left = e.clientX - rect.left - d/2 + 'px';
+    circle.style.top = e.clientY - rect.top - d/2 + 'px';
+    circle.addEventListener('animationend', ()=>circle.remove());
+  });
+});
+
+// Validasi form & toast notification
+const form = document.getElementById('loginForm');
+form.addEventListener('submit', e=>{
+  e.preventDefault();
+  const email = document.getElementById('email').value.trim();
+  const pass = document.getElementById('password').value.trim();
+  if(!email || !pass){
+    showToast('Email dan password harus diisi','error');
+    return;
+  }
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if(!emailPattern.test(email)){
+    showToast('Format email tidak valid','error');
+    return;
+  }
+  // Simulasi login sukses/gagal
+  if(email==='admin@example.com' && pass==='123456'){
+    showToast('Login berhasil','success');
+  }else{
+    showToast('Login gagal: email atau password salah','error');
+  }
+});
+</script>
+
+</body>
+</html>
