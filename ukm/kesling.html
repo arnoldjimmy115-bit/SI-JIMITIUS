@@ -42,24 +42,23 @@
   <!-- Animate.css -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 </head>
-<body class="font-body bg-light text-dark dark:bg-dark dark:text-light antialiased flex">
+<body class="font-body bg-light text-dark dark:bg-dark dark:text-light antialiased">
 
-<!-- Sidebar -->
-<aside class="w-64 h-screen bg-primary dark:bg-dark text-white fixed left-0 top-0 flex flex-col shadow-lg">
-  <!-- Logo -->
+<div id="overlay" class="fixed inset-0 bg-black/50 z-40 hidden"></div>
+
+<aside id="sidebar" class="w-64 h-screen bg-primary dark:bg-dark text-white fixed left-0 top-0 flex flex-col shadow-lg 
+      transition-transform transform -translate-x-full md:translate-x-0 z-50">
   <div class="flex items-center gap-3 px-6 py-4 border-b border-white/20">
     <img src="https://raw.githubusercontent.com/arnoldjimmy115-bit/puskesmas-assets/main/putih%20logo.png" alt="Logo" class="w-8 h-8">
     <h1 class="font-heading text-lg">SI JIMITIUS</h1>
   </div>
 
-  <!-- User Info -->
   <div class="px-6 py-4 border-b border-white/20">
     <p id="userName" class="font-semibold"></p>
     <p id="userRole" class="text-sm text-secondary"></p>
   </div>
 
-  <!-- Menu -->
-  <nav class="flex-1 px-4 py-6 space-y-2">
+  <nav class="flex-1 px-4 py-6 space-y-2 overflow-y-auto">
     <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-secondary hover:text-dark transition">
       <i data-feather="calendar" class="w-5 h-5"></i> Kelola Jadwal Pemeriksaan
     </a>
@@ -74,7 +73,6 @@
     </a>
   </nav>
 
-  <!-- Footer Menu -->
   <div class="px-4 py-4 border-t border-white/20 flex flex-col gap-2">
     <button onclick="logout()" class="flex items-center gap-2 px-3 py-2 rounded-md bg-accent hover:bg-red-700 transition">
       <i data-feather="log-out" class="w-5 h-5"></i> Logout
@@ -82,39 +80,37 @@
   </div>
 </aside>
 
-<!-- Main Content -->
-<div class="ml-64 flex-1 min-h-screen flex flex-col">
-  <!-- Header -->
-  <header class="w-full bg-white dark:bg-gray-900 shadow px-6 py-4 flex justify-between items-center">
-    <h2 class="text-xl font-heading text-primary dark:text-secondary">Dashboard — Kesehatan Lingkungan</h2>
+<div class="md:ml-64 flex-1 min-h-screen flex flex-col">
+  <header class="w-full bg-white dark:bg-gray-900 shadow px-4 md:px-6 py-4 flex justify-between items-center">
+    <button id="menuToggle" class="md:hidden p-2 rounded-md bg-primary text-white hover:bg-secondary">
+      <i data-feather="menu"></i>
+    </button>
+
+    <h2 class="text-lg md:text-xl font-heading text-primary dark:text-secondary">Dashboard — Kesehatan Lingkungan</h2>
+
     <button onclick="toggleDark()" id="darkToggle" class="p-2 rounded-full bg-secondary text-dark hover:bg-accent hover:text-white transition">
       <i data-feather="moon"></i>
     </button>
   </header>
 
-  <!-- Content -->
-  <main class="flex-1 p-8">
-    <h3 class="text-2xl font-heading mb-6 text-primary dark:text-secondary">Fungsi Koordinator Kesling</h3>
-    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Card Jadwal -->
+  <main class="flex-1 p-4 md:p-8">
+    <h3 class="text-xl md:text-2xl font-heading mb-6 text-primary dark:text-secondary">Fungsi Koordinator Kesling</h3>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-card hover:shadow-cardHover transition">
         <i data-feather="calendar" class="w-10 h-10 text-secondary mb-4"></i>
         <h4 class="font-bold text-lg mb-2">Kelola Jadwal Pemeriksaan</h4>
         <p class="text-sm text-gray-500 dark:text-gray-300">Menyusun jadwal kegiatan rutin pemeriksaan kesehatan lingkungan.</p>
       </div>
-      <!-- Card Air & Sanitasi -->
       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-card hover:shadow-cardHover transition">
         <i data-feather="droplet" class="w-10 h-10 text-secondary mb-4"></i>
         <h4 class="font-bold text-lg mb-2">Pemeriksaan Air & Sanitasi</h4>
         <p class="text-sm text-gray-500 dark:text-gray-300">Mengelola kegiatan pemeriksaan kualitas air dan sanitasi lingkungan.</p>
       </div>
-      <!-- Card Laporan -->
       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-card hover:shadow-cardHover transition">
         <i data-feather="file-text" class="w-10 h-10 text-secondary mb-4"></i>
         <h4 class="font-bold text-lg mb-2">Laporan Kesling</h4>
         <p class="text-sm text-gray-500 dark:text-gray-300">Mengirimkan laporan hasil pemeriksaan kesehatan lingkungan.</p>
       </div>
-      <!-- Card Monitoring -->
       <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-card hover:shadow-cardHover transition">
         <i data-feather="check-square" class="w-10 h-10 text-secondary mb-4"></i>
         <h4 class="font-bold text-lg mb-2">Monitoring & Evaluasi</h4>
@@ -127,19 +123,16 @@
 <script>
   feather.replace();
 
-  // Proteksi login
   if (!localStorage.getItem("loggedIn")) {
     window.location.href = "../login.html";
   }
 
-  // Ambil user dari localStorage
   const userName = localStorage.getItem("username") || "";
   const userRole = localStorage.getItem("role") || "";
 
   document.getElementById("userName").textContent = userName || "User";
   document.getElementById("userRole").textContent = userRole || "Koordinator Kesling";
 
-  // ✅ Validasi role (redirect ke index jika bukan Koordinator Kesling)
   if (userRole !== "Koordinator Kesling") {
     Swal.fire({
       icon: 'warning',
@@ -152,7 +145,6 @@
     });
   }
 
-  // Dark Mode
   const htmlTag = document.getElementById("htmlTag");
   const darkToggle = document.getElementById("darkToggle");
   function toggleDark() {
@@ -166,7 +158,25 @@
     toggleDark(); 
   }
 
-  // Logout
+  const sidebar = document.getElementById("sidebar");
+  const menuToggle = document.getElementById("menuToggle");
+  const overlay = document.getElementById("overlay");
+
+  function closeSidebar() {
+    sidebar.classList.add("-translate-x-full");
+    overlay.classList.add("hidden");
+  }
+
+  if (menuToggle) {
+    menuToggle.addEventListener("click", () => {
+      sidebar.classList.toggle("-translate-x-full");
+      overlay.classList.toggle("hidden");
+    });
+  }
+  if (overlay) {
+    overlay.addEventListener("click", closeSidebar);
+  }
+
   function logout() {
     Swal.fire({
       title: 'Apakah Anda yakin ingin logout?',
@@ -200,6 +210,5 @@
     });
   }
 </script>
-
 </body>
 </html>
