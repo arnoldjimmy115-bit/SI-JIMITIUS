@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="id" class="scroll-smooth" id="htmlTag">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login — SI JIMITIUS</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#006b6d',
+            secondary: '#f2b643',
+            accent: '#a22e33',
+            dark: '#2f2f3b',
+            light: '#f9fafb'
+          },
+          fontFamily: {
+            heading: ['Poppins', 'sans-serif'],
+            body: ['Roboto', 'sans-serif']
+          },
+          boxShadow: {
+            card: '0 4px 10px rgba(0,0,0,0.08)',
+            cardHover: '0 8px 28px rgba(0,0,0,0.15)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Feather Icons -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <!-- SweetAlert2 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  <style>
+    .btn-animate { transition: all 0.3s ease; }
+    .btn-animate:hover { transform: scale(1.05); background: linear-gradient(135deg, #f2b643, #a22e33); color: white !important; }
+    /* Custom Toast */
+    .swal2-popup.swal2-toast {
+      font-size: 0.8rem !important;
+      padding: 0.6rem 1rem !important;
+      border-radius: 0.5rem !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+    }
+    .swal2-toast .swal2-title {
+      font-weight: 500 !important;
+    }
+  </style>
+</head>
+<body class="font-body bg-light text-dark dark:bg-dark dark:text-light antialiased">
+
+<!-- Login Container -->
+<div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-primary to-dark">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-card w-full max-w-md p-8 mx-4">
+    <!-- Logo -->
+    <div class="flex flex-col items-center mb-6">
+      <img id="logoImg" src="https://raw.githubusercontent.com/arnoldjimmy115-bit/puskesmas-assets/main/hijau%20logo.png" alt="Logo" class="w-12 h-12 mb-2">
+      <h1 class="font-heading text-2xl text-primary dark:text-secondary">SI JIMITIUS</h1>
+      <p class="text-gray-500 dark:text-gray-300 text-sm">Login ke sistem informasi</p>
+    </div>
+
+    <!-- Form -->
+    <form id="loginForm">
+      <div class="mb-4">
+        <label class="block text-sm font-semibold mb-1">Username</label>
+        <div class="relative">
+          <input id="usernameInput" type="text" placeholder="Masukkan username" class="w-full px-4 py-2 rounded border dark:border-gray-700 bg-light dark:bg-gray-700 focus:ring-2 focus:ring-secondary outline-none">
+          <i data-feather="user" class="absolute right-3 top-2.5 w-5 h-5 text-gray-400"></i>
+        </div>
+      </div>
+
+      <div class="mb-6">
+        <label class="block text-sm font-semibold mb-1">Password</label>
+        <div class="relative">
+          <input id="passwordInput" type="password" placeholder="Masukkan password" class="w-full pr-10 px-4 py-2 rounded border dark:border-gray-700 bg-light dark:bg-gray-700 focus:ring-2 focus:ring-secondary outline-none">
+          <!-- Toggle lihat password -->
+          <button type="button" id="togglePassword" class="absolute right-2 top-2.5 text-gray-500 hover:text-gray-800 dark:text-gray-300 dark:hover:text-white">
+            <i data-feather="eye"></i>
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="w-full py-2 rounded bg-secondary text-dark font-semibold btn-animate">Login</button>
+    </form>
+
+    <!-- Link tambahan -->
+    <div class="mt-6 text-center text-sm">
+      <a href="index.html" class="text-primary dark:text-secondary hover:underline">Kembali ke halaman beranda?</a>
+    </div>
+  </div>
+
+  <!-- Dark mode toggle -->
+  <button id="darkToggle" class="absolute top-4 right-4 w-10 h-10 flex items-center justify-center rounded-full bg-secondary text-dark shadow-md hover:bg-accent hover:text-white"><i data-feather="moon"></i></button>
+</div>
+
+<!-- JS -->
+<script>
+  feather.replace();
+  const htmlTag = document.getElementById('htmlTag');
+  const darkToggle = document.getElementById('darkToggle');
+  const logoImg = document.getElementById('logoImg');
+  const passwordInput = document.getElementById('passwordInput');
+  const togglePasswordBtn = document.getElementById('togglePassword');
+
+  function setIcon(isDark) {
+    const icon = isDark ? feather.icons.sun.toSvg() : feather.icons.moon.toSvg();
+    darkToggle.innerHTML = icon; feather.replace();
+  }
+  function setLogo(isDark) {
+    logoImg.src = isDark 
+      ? "https://raw.githubusercontent.com/arnoldjimmy115-bit/puskesmas-assets/main/putih%20logo.png"
+      : "https://raw.githubusercontent.com/arnoldjimmy115-bit/puskesmas-assets/main/hijau%20logo.png";
+  }
+  if(localStorage.getItem('theme') === 'dark'){ htmlTag.classList.add('dark'); setIcon(true); setLogo(true); } 
+  else { setIcon(false); setLogo(false); }
+  darkToggle.addEventListener('click', () => {
+    const isDark = htmlTag.classList.toggle('dark');
+    localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    setIcon(isDark); setLogo(isDark);
+  });
+  togglePasswordBtn.addEventListener('click', () => {
+    const type = passwordInput.type === "password" ? "text" : "password";
+    passwordInput.type = type;
+    togglePasswordBtn.innerHTML = feather.icons[type === "password" ? "eye" : "eye-off"].toSvg();
+  });
+
+  // =====================================================
+  // Data User Koordinator
+  // =====================================================
+  const users = [
+    { username: "Noviarni Raesita", password: "NoV@2025!xY", role: "Koordinator Promkes" },
+    { username: "Maria C. Nona Amsi", password: "KiA#Neo7z@", role: "Koordinator KIA/KB" },
+    { username: "Aurelia Heryanti", password: "GiZi$8Lp%", role: "Koordinator Gizi" },
+    { username: "Putu Ayu S. Budiyanti", password: "KesLin9@#Q", role: "Koordinator Kesling" },
+    { username: "Agneldis Espaltis", password: "P2m!2025$z", role: "Koordinator P2PM" },
+    { username: "Natalia Nona Wati", password: "TbHiv@Qw88", role: "Koordinator TB & HIV" },
+    { username: "Elisius Moat Gete", password: "KuSta#77Xp", role: "Koordinator Kusta" },
+    { username: "Theresia N. Helena Sadipun", password: "Iva@2025!x", role: "Koordinator IVA" },
+    { username: "Fransiska Lilyani", password: "Ptm2025$Lp", role: "Koordinator PTM" },
+    { username: "Maria Nggita Nggumba", password: "Uks#Gs@9q", role: "Koordinator UKS & UKGS" },
+    { username: "Maria Erni", password: "Trad@2025#", role: "Koordinator Kesehatan Tradisional" },
+    { username: "Inosensia Dua Ota", password: "Jiwa$9qLp!", role: "Koordinator Kesehatan Jiwa" }
+  ];
+
+const rolePages = {
+  "Koordinator Promkes": "ukm/koordinator_program/dashboard.html",
+  "Koordinator Kesling": "ukm/koordinator_program/dashboard.html",
+  "Koordinator KIA/KB": "",
+  "Koordinator Gizi": "",
+  "Koordinator P2PM": "",
+  "Koordinator TB & HIV": "",
+  "Koordinator Kusta": "",
+  "Koordinator IVA": "",
+  "Koordinator PTM": "",
+  "Koordinator UKS & UKGS": "",
+  "Koordinator Kesehatan Tradisional": "",
+  "Koordinator Kesehatan Jiwa": ""
+};
+
+
+
+  const loginForm = document.getElementById("loginForm");
+  const usernameInput = document.getElementById("usernameInput");
+
+  // Toast template
+  const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    showConfirmButton: false,
+    timer: 2200,
+    timerProgressBar: true,
+    customClass: {
+      popup: 'swal2-toast'
+    },
+    didOpen: (toast) => {
+      toast.onmouseenter = Swal.stopTimer;
+      toast.onmouseleave = Swal.resumeTimer;
+    }
+  });
+
+  loginForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    const username = usernameInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    if (!username || !password) {
+      Toast.fire({ icon: 'warning', title: 'Isi username dan password!' });
+      return;
+    }
+
+    const foundUser = users.find(u => u.username === username && u.password === password);
+
+    if (foundUser) {
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("username", foundUser.username);
+      localStorage.setItem("role", foundUser.role);
+
+      Toast.fire({ icon: 'success', title: `Selamat datang ${foundUser.username}` })
+        .then(() => {
+          const page = rolePages[foundUser.role] || "index.html"; 
+          window.location.href = page;
+        });
+
+    } else {
+      Toast.fire({ icon: 'error', title: 'Username atau password salah!' });
+    }
+  });
+</script>
+</body>
+</html>
